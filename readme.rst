@@ -12,6 +12,6 @@ tests
     pieni
 
 
-| only files have ``.test.scm`` and **.spec.scm** in directory **test** or **spec** under current directory
+| only files have ``.test.scm`` and ``.spec.scm`` in directory ``test`` or ``spec`` under current directory
 | will be tested
 
