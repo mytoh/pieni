@@ -6,9 +6,10 @@ just run your tests
 
 tests
 =====
-run test files in directory *test* or *spec*
+run test files in directory
 ::
   
     pieni
 
+only files have **.test.scm** and **.spec.scm** in directory **test** or **spec**
 
