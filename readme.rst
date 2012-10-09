@@ -1,12 +1,12 @@
 
 pieni
 =====
- just run your tests
+just run your tests
 
 
 tests
 -----
- run test files in directory
+run test files in directory
 ::
 
     pieni
