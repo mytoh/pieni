@@ -12,11 +12,10 @@
 (define-syntax define-test
   (syntax-rules ()
     ((_ name expr ...)
-     (begin
+     (do-test
        (test-section (symbol->string 'name))
        expr
-       ...
-       (test-end))))
+       ...)))
   )
 
 
@@ -26,3 +25,10 @@
      (test (quote expr) expect (lambda () form) checker))))
 
 
+(define-syntax do-test
+  (syntax-rules ()
+    ((_ body ...)
+     (begin
+     body
+     ...
+     ))))
