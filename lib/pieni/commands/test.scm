@@ -53,7 +53,7 @@
     ((null? (car files))
      (for-each
        (lambda (t)
-         (run-process `(gosh -Isrc ,t) :wait #t))
+         (run-process `(gosh -Ilib ,t) :wait #t))
        (apply append
               (map
                 (lambda (d)
@@ -62,5 +62,5 @@
     (else
       (for-each
         (lambda (t)
-          (run-process `(gosh -Isrc ,(build-path (current-directory) t)) :wait #t))
+          (run-process `(gosh -Ilib ,(build-path (current-directory) t)) :wait #t))
         (car files)))))
