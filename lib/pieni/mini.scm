@@ -22,7 +22,7 @@
 (define-syntax is
   (syntax-rules ()
     ((_ (checker expect form))
-     (test (quote expr) expect (lambda () form) checker))))
+     (test (quote form) expect (lambda () form) checker))))
 
 
 (define-syntax do-test
