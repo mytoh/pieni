@@ -1,3 +1,3 @@
 (define-module pieni
-(extend pieni.core)
+  (extend pieni.mini)
   )

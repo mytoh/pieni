@@ -5,6 +5,7 @@
   (export
     define-test
     is
+    are
     ==)
   (use gauche.test))
 (select-module pieni.mini)
@@ -24,8 +25,21 @@
     ((_ (checker expect form))
      (test (quote form) expect (lambda () form) checker))))
 
+(define-syntax are
+  (syntax-rules ()
+    ((_ expect form)
+     (is (== expect form)))
+    ((_ expect form . rest)
+     (begin
+       (is (== expect form))
+       (are . rest)  
+       ))
+    ))
+
 (define (== t1 t2)
   (cond
+    ((boolean? t1)
+     (eq? t1 t2))
     ((string? t1)
      (string=? t1 t2))
     ((number? t1)
