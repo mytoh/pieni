@@ -3,7 +3,6 @@
   (use gauche.parseopt)
   (use util.match)
   (use file.util)
-  (use pieni.core)
   (use pieni.commands)
   )
 (select-module pieni.cli)
