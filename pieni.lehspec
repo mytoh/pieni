@@ -1,5 +1,6 @@
 
 (spec
+  '(name "pieni")
   '(files ("lib/**/*.scm"
           "bin/*"
           "*.lehspec"
