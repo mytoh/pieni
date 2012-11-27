@@ -1,8 +1,12 @@
 
 (spec
-  '(name "pieni")
-  '(files ("lib/**/*.scm"
-          "bin/*"
-          "*.lehspec"
-          "readme*"
-          "test/**/*.scm")))
+  (name "pieni")
+  (description "test based on srfi 78")
+  (homepage "http://github.com/mytoh/pieni")
+  (files ("lib/pieni/check.sls"
+          "lib/pieni/cli.sls"
+          "lib/pieni/midje.sls"
+          "lib/pieni/mini.sls"
+          "bin/pieni"
+          "pieni.lehspec"
+          )))

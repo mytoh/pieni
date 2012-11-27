@@ -1,9 +1,17 @@
-":"; exec gosh -- $0 "$@"
+#!/usr/bin/env mosh
 
-(add-load-path "../src" :relative)
-(use pieni.cli :prefix cli:)
+(import
+  (scheme base)
+  (scheme process-context)
+  (prefix (pieni cli)
+          cli:)  )
+
 
 (define (main args)
   (cli:runner args))
+
+
+(main (command-line))
+
 
 ;; vim:filetype=scheme
