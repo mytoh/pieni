@@ -155,23 +155,34 @@
       (if (>= (check:mode) 1)
         (begin
           (newline)
-          (display "; *** checks *** : ")
-          (display (paint (number->string check:correct) 'green))
-          (display " correct, ")
-          (display (paint (number->string (length check:failed)) 'red))
-          (display " failed.")
-          (if (or (null? check:failed) (<= (check:mode) 1))
-            (newline)
-            (let* ((w (car (reverse check:failed)))
-                   (expression (car w))
-                   (actual-result (cadr w))
-                   (expected-result (caddr w)))
-              (newline)
-              (display " First failed example:")
-              (newline)
-              (check:report-expression expression)
-              (check:report-actual-result actual-result)
-              (check:report-result-failed expected-result))))))
+          (cond
+            ((or (null? check:failed) (<= (check:mode) 1))
+             (display (paint (string-append
+                               "; *** checks *** : "
+                               (number->string check:correct)
+                               " correct, "
+                               (number->string (length check:failed))
+                               " failed.")
+                             'green))
+             (newline))
+            (else
+              (display (paint (string-append
+                                "; *** checks *** : "
+                                (number->string check:correct)
+                                " correct, "
+                                (number->string (length check:failed))
+                                " failed.")
+                              'red))
+              (let* ((w (car (reverse check:failed)))
+                     (expression (car w))
+                     (actual-result (cadr w))
+                     (expected-result (caddr w)))
+                (newline)
+                (display " First failed example:")
+                (newline)
+                (check:report-expression expression)
+                (check:report-actual-result actual-result)
+                (check:report-result-failed expected-result)))))))
 
     (define (check-passed? expected-total-count)
       (and (= (length check:failed) 0)
