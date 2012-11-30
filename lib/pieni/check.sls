@@ -155,6 +155,7 @@
       (if (>= (check:mode) 1)
         (begin
           (newline)
+          (newline)
           (cond
             ((or (null? check:failed) (<= (check:mode) 1))
              (display (paint (string-append
