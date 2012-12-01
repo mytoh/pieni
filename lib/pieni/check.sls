@@ -48,7 +48,8 @@
     check-report
     check-set-mode!
     check-reset!
-    check-passed?)
+    check-passed?
+    check:report-style)
   (import
     (scheme base)
     (scheme write)

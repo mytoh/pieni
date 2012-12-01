@@ -7,6 +7,7 @@
     (scheme write)
     (srfi :8 receive)
     (srfi :37 args-fold)
+    (srfi :39 )
     (loitsu file)
     (loitsu process)
     (pieni check))
@@ -32,7 +33,9 @@
       (lambda (f)
         (display (string-append "test file " f))
         (newline)
-        (display (run-command (list 'nmosh f))))
+        (display
+          (parameterize ((check:report-style 'default))
+            (run-command (list 'nmosh f)))))
       (directory-list-rec "test"))
 
         ))
