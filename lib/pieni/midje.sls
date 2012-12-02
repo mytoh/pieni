@@ -14,10 +14,10 @@
     (define-syntax fact
       (syntax-rules (=>)
         ((_ form => expect)
-         (check expect => form))
-        ((_ expect => form . rest)
+         (check form => expect))
+        ((_ form => expect . rest)
          (begin
-           (check expect => form)
+           (check form => expect)
            (fact . rest)))))
 
 

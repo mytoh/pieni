@@ -1,5 +1,7 @@
 
-(use pieni.mini)
+(import
+  (scheme base)
+  (pieni mini))
 
 
 (define-test is

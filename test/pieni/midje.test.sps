@@ -1,5 +1,7 @@
 
-(use pieni.midje)
+(import
+  (scheme base)
+  (pieni midje))
 
 (fact (+ 1 1) => 2
       "fact"  => "fact")

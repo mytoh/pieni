@@ -25,30 +25,28 @@
 
     (define-syntax is
       (syntax-rules ()
-        ((_ form expect)
-         (check form => expect))))
+        ((_  expect)
+         (check expect => #t))))
 
     (define-syntax are
       (syntax-rules ()
         ((_ form expect)
-         (is form expect))
+         (is (== form expect)))
         ((_ form expect . rest)
          (begin
-           (is form expect)
-           (are . rest)
-           ))
-        ))
+           (is (== form expect))
+           (are . rest)))))
 
-    ; (define (== t1 t2)
-    ;   (cond
-    ;     ((boolean? t1)
-    ;      (eq? t1 t2))
-    ;     ((string? t1)
-    ;      (string=? t1 t2))
-    ;     ((number? t1)
-    ;      (= t1 t2))
-    ;     (else
-    ;       (equal? t1 t2))))
+    (define (== t1 t2)
+      (cond
+        ((boolean? t1)
+         (eq? t1 t2))
+        ((string? t1)
+         (string=? t1 t2))
+        ((number? t1)
+         (= t1 t2))
+        (else
+          (equal? t1 t2))))
 
 
     (define-syntax do-test
