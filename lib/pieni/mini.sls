@@ -7,8 +7,7 @@
     are
     )
   (import
-    (scheme base)
-    (scheme write)
+    (rnrs)
     (pieni check))
 
   (begin

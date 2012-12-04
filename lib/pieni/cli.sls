@@ -3,8 +3,7 @@
   (export
     runner)
   (import
-    (scheme base)
-    (scheme write)
+    (rnrs)
     (srfi :8 receive)
     (srfi :37 args-fold)
     (srfi :39)

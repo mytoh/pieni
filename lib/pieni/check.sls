@@ -51,8 +51,7 @@
     check-passed?
     check:report-style)
   (import
-    (scheme base)
-    (scheme write)
+    (rnrs)
     (srfi :39)
     (loitsu maali))
 

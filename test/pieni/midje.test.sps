@@ -1,6 +1,6 @@
 
 (import
-  (scheme base)
+  (rnrs)
   (pieni midje))
 
 (fact (+ 1 1) => 2
