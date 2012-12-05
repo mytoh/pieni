@@ -13,7 +13,8 @@ description
 
 synopsis
 --------
-::
+
+.. code:: shell
 
     pieni
 
