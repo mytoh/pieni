@@ -5,6 +5,8 @@
   (import
     (rnrs)
     (srfi :8 receive)
+    (only (srfi :13)
+          string-trim-both)
     (srfi :37 args-fold)
     (srfi :39)
     (loitsu file)
@@ -18,26 +20,34 @@
               (lambda (opt name arg report)
                 (values arg))))
 
-    (define (runner args)
-      (let ((files (cdr args)))
-        (cond
-          ((null? files)
-           (for-each
+    (define (run-test files)
+      (cond
+        ((string=? "true\n" (process-output->string "git rev-parse --is-inside-work-tree"))
+         (let ((libdir (string-trim-both
+                         (process-output->string "git rev-parse --show-toplevel"))))
+         (for-each
              (lambda (f)
                (display (string-append "test file " f))
                (newline)
                (display
-                 (run-command (list 'mosh f))))
-             (directory-list-rec "test")))
-          (else
-            (for-each
+                 (run-command `(mosh ,(string-append "--loadpath=" libdir) ,f))))
+             files)))
+        (else
+          (for-each
               (lambda (f)
                 (display (string-append "test file " f))
                 (newline)
                 (display
                   (run-command (list 'mosh f))))
-              files)
-            ))))
+              files))))
+
+    (define (runner args)
+      (let ((files (cdr args)))
+        (cond
+          ((null? files)
+           (run-test (directory-list-rec "test")))
+          (else
+            (run-test files)))))
 
 
     ))
