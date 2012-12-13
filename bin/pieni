@@ -6,11 +6,7 @@
           cli:)  )
 
 
-(define (main args)
-  (cli:runner args))
-
-
-(main (command-line))
+(cli:runner (command-line))
 
 
 ;; vim:filetype=scheme
