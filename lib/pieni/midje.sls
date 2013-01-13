@@ -4,7 +4,8 @@
     fact
     facts)
   (import
-    (rnrs)
+    (silta base)
+    (silta write)
     (pieni check))
 
   (begin

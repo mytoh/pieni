@@ -3,7 +3,8 @@
   (export
     runner)
   (import
-    (rnrs)
+    (silta base)
+    (silta write)
     (srfi :8 receive)
     (only (srfi :13)
           string-trim-both)

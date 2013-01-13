@@ -51,7 +51,9 @@
     check-passed?
     check:report-style)
   (import
-    (rnrs)
+    (silta base)
+    (silta write)
+    (silta cxr)
     (srfi :39)
     (loitsu maali))
 

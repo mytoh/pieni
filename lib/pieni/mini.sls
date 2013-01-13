@@ -7,7 +7,7 @@
     are
     )
   (import
-    (rnrs)
+    (silta base)
     (pieni check))
 
   (begin
