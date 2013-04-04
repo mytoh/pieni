@@ -1,91 +1,91 @@
-; <PLAINTEXT>
-; Copyright (c) 2005-2006 Sebastian Egner.
-;
-; Permission is hereby granted, free of charge, to any person obtaining
-; a copy of this software and associated documentation files (the
-; ``Software''), to deal in the Software without restriction, including
-; without limitation the rights to use, copy, modify, merge, publish,
-; distribute, sublicense, and/or sell copies of the Software, and to
-; permit persons to whom the Software is furnished to do so, subject to
-; the following conditions:
-;
-; The above copyright notice and this permission notice shall be
-; included in all copies or substantial portions of the Software.
-;
-; THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-; EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-; MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-; NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-; LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-; OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-; WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-;
-; -----------------------------------------------------------------------
-; Modified by Derick Eddington to be able to be included into an R6RS library.
-;
-; Lightweight testing (reference implementation)
-; ==============================================
-;
-; Sebastian.Egner@philips.com
-; in R5RS + SRFI 23 (error) + SRFI 42 (comprehensions)
-;
-; history of this file:
-;   SE, 25-Oct-2004: first version based on code used in SRFIs 42 and 67
-;   SE, 19-Jan-2006: (arg ...) made optional in check-ec
-;
-; Naming convention "check:<identifier>" is used only internally.
+;; <PLAINTEXT>
+;; Copyright (c) 2005-2006 Sebastian Egner.
 
-; -- portability --
+;; Permission is hereby granted, free of charge, to any person obtaining
+;; a copy of this software and associated documentation files (the
+;; ``Software''), to deal in the Software without restriction, including
+;; without limitation the rights to use, copy, modify, merge, publish,
+;; distribute, sublicense, and/or sell copies of the Software, and to
+;; permit persons to whom the Software is furnished to do so, subject to
+;; the following conditions:
 
-; PLT:      (require (lib "23.ss" "srfi") (lib "42.ss" "srfi"))
-; Scheme48: ,open srfi-23 srfi-42
+;; The above copyright notice and this permission notice shall be
+;; included in all copies or substantial portions of the Software.
+
+;; THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
+;; EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+;; MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+;; NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+;; LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+;; OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+;; WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+;; -----------------------------------------------------------------------
+;; Modified by Derick Eddington to be able to be included into an R6RS library.
+
+;; Lightweight testing (reference implementation)
+;; ==============================================
+
+;; Sebastian.Egner@philips.com
+;; in R5RS + SRFI 23 (error) + SRFI 42 (comprehensions)
+
+;; history of this file:
+;;   SE, 25-Oct-2004: first version based on code used in SRFIs 42 and 67
+;;   SE, 19-Jan-2006: (arg ...) made optional in check-ec
+
+;; Naming convention "check:<identifier>" is used only internally.
+
+;; -- portability --
+
+;; PLT:      (require (lib "23.ss" "srfi") (lib "42.ss" "srfi"))
+;; Scheme48: ,open srfi-23 srfi-42
 
 
 (library (pieni check)
-  (export
-    check
-    check-ec
-    check-report
-    check-set-mode!
-    check-reset!
-    check-passed?
-    check:report-style)
+    (export
+      check
+      check-ec
+      check-report
+      check-set-mode!
+      check-reset!
+      check-passed?
+      check:report-style)
   (import
     (silta base)
     (silta write)
     (silta cxr)
     (srfi :39)
-    (loitsu maali))
+    (maali))
 
   (begin
 
-    ; -- utilities --
+    ;; -- utilities --
 
     (define check:write write)
 
-    ; You can also use a pretty printer if you have one.
-    ; However, the output might not improve for most cases
-    ; because the pretty printers usually output a trailing
-    ; newline.
+    ;; You can also use a pretty printer if you have one.
+    ;; However, the output might not improve for most cases
+    ;; because the pretty printers usually output a trailing
+    ;; newline.
 
-    ; PLT:      (require (lib "pretty.ss")) (define check:write pretty-print)
-    ; Scheme48: ,open pp (define check:write p)
+    ;; PLT:      (require (lib "pretty.ss")) (define check:write pretty-print)
+    ;; Scheme48: ,open pp (define check:write p)
 
-    ; -- mode --
+    ;; -- mode --
 
     (define check:mode
       (make-parameter 'off
-                      (lambda (v) (case v
-                                    ((off)           0)
-                                    ((summary)       1)
-                                    ((report-failed) 10)
-                                    ((report)        100)
-                                    (else (error "unrecognized mode" v))))))
+        (lambda (v) (case v
+                      ((off)           0)
+                      ((summary)       1)
+                      ((report-failed) 10)
+                      ((report)        100)
+                      (else (error "unrecognized mode" v))))))
 
     (define (check-set-mode! mode)
       (check:mode mode))
 
-    ; -- state --
+    ;; -- state --
 
     (define check:correct #f)
     (define check:failed   #f)
@@ -100,58 +100,58 @@
     (define (check:add-failed! expression actual-result expected-result)
       (set! check:failed
         (cons (list expression actual-result expected-result)
-              check:failed)))
+          check:failed)))
 
-    ; -- reporting --
+    ;; -- reporting --
 
     (define check:report-style
       (make-parameter 'dot))
 
     (define (check:report-expression expression)
       (case (check:report-style)
-            ('default
-             (newline)
-             (check:write expression)
-             (display " => "))
-            ('dot
-             "")))
+        ('default
+          (newline)
+          (check:write expression)
+          (display " => "))
+        ('dot
+         "")))
 
     (define (check:report-actual-result actual-result)
       (case (check:report-style)
         ('default
-      (check:write actual-result)
-      (display " ; "))
+          (check:write actual-result)
+          (display " ; "))
         ('dot "")))
 
     (define (check:report-correct cases)
       (case (check:report-style)
         ('default
-         (display (paint "correct" 'green))
-         (if (not (= cases 1))
-           (begin (display " (")
-                  (display cases)
-                  (display " cases checked)")))
-         (newline))
+          (display (paint "correct" 'green))
+          (if (not (= cases 1))
+            (begin (display " (")
+                   (display cases)
+                   (display " cases checked)")))
+          (newline))
         ('dot
          (display (paint "." 'green)))))
 
     (define (check:report-failed expected-result)
       (case (check:report-style)
         ('defalt
-         (display "*** failed ***")
-         (newline)
-         (display " ; expected result: ")
-         (check:write expected-result)
-         (newline))
+          (display "*** failed ***")
+          (newline)
+          (display " ; expected result: ")
+          (check:write expected-result)
+          (newline))
         ('dot
          (display (paint "F" 'red)))))
 
     (define (check:report-result-failed expected-result)
-         (display (paint "*** failed ***" 'red))
-         (newline)
-         (display " ; expected result: ")
-         (check:write expected-result)
-         (newline))
+      (display (paint "*** failed ***" 'red))
+      (newline)
+      (display " ; expected result: ")
+      (check:write expected-result)
+      (newline))
 
     (define (check-report)
       (if (>= (check:mode) 1)
@@ -159,23 +159,23 @@
           (newline)
           (newline)
           (cond
-            ((or (null? check:failed) (<= (check:mode) 1))
-             (display (paint (string-append
-                               "; *** checks *** : "
-                               (number->string check:correct)
-                               " correct, "
-                               (number->string (length check:failed))
-                               " failed.")
-                             'green))
-             (newline))
+              ((or (null? check:failed) (<= (check:mode) 1))
+               (display (paint (string-append
+                                   "; *** checks *** : "
+                                 (number->string check:correct)
+                                 " correct, "
+                                 (number->string (length check:failed))
+                                 " failed.")
+                               'green))
+               (newline))
             (else
-              (display (paint (string-append
-                                "; *** checks *** : "
-                                (number->string check:correct)
-                                " correct, "
-                                (number->string (length check:failed))
-                                " failed.")
-                              'red))
+                (display (paint (string-append
+                                    "; *** checks *** : "
+                                  (number->string check:correct)
+                                  " correct, "
+                                  (number->string (length check:failed))
+                                  " failed.")
+                                'red))
               (let* ((w (car (reverse check:failed)))
                      (expression (car w))
                      (actual-result (cadr w))
@@ -189,10 +189,10 @@
 
     (define (check-passed? expected-total-count)
       (and (= (length check:failed) 0)
-           (= check:correct expected-total-count)))
+        (= check:correct expected-total-count)))
 
 
-    ; -- simple checks --
+    ;; -- simple checks --
 
     (define (check:proc expression thunk equal expected-result)
       (case (check:mode)
@@ -233,7 +233,7 @@
          (if (>= (check:mode) 1)
            (check:proc 'expr (lambda () expr) equal expected)))))
 
-    ; -- parametric checks --
+    ;; -- parametric checks --
 
     (define (check:proc-ec w)
       (let ((correct? (car w))
@@ -260,33 +260,33 @@
         ((check-ec:make qualifiers expr (=> equal) expected (arg ...))
          (if (>= (check:mode) 1)
            (check:proc-ec
-             (let ((cases 0))
-               (let ((w (first-ec
-                          #f
-                          qualifiers
-                          (:let equal-pred equal)
-                          (:let expected-result expected)
-                          (:let actual-result
-                                (let ((arg arg) ...) ; (*)
-                                  expr))
-                          (begin (set! cases (+ cases 1)))
-                          (if (not (equal-pred actual-result expected-result)))
-                          (list (list 'let (list (list 'arg arg) ...) 'expr)
-                                actual-result
-                                expected-result
-                                cases))))
-                 (if w
-                   (cons #f w)
-                   (list #t
-                         '(check-ec qualifiers
-                                    expr (=> equal)
-                                    expected (arg ...))
-                         (if #f #f)
-                         (if #f #f)
-                         cases)))))))))
+            (let ((cases 0))
+              (let ((w (first-ec
+                        #f
+                        qualifiers
+                        (:let equal-pred equal)
+                        (:let expected-result expected)
+                        (:let actual-result
+                              (let ((arg arg) ...) ; (*)
+                                expr))
+                        (begin (set! cases (+ cases 1)))
+                        (if (not (equal-pred actual-result expected-result)))
+                        (list (list 'let (list (list 'arg arg) ...) 'expr)
+                          actual-result
+                          expected-result
+                          cases))))
+                (if w
+                  (cons #f w)
+                  (list #t
+                    '(check-ec qualifiers
+                               expr (=> equal)
+                               expected (arg ...))
+                    (if #f #f)
+                    (if #f #f)
+                    cases)))))))))
 
-    ; (*) is a compile-time check that (arg ...) is a list
-    ; of pairwise disjoint bound variables at this point.
+                                        ; (*) is a compile-time check that (arg ...) is a list
+                                        ; of pairwise disjoint bound variables at this point.
 
     (define-syntax check-ec
       (syntax-rules (nested =>)
@@ -321,5 +321,3 @@
 
 
     ))
-
-
